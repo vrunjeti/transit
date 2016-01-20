@@ -4,27 +4,64 @@ import { Typeahead } from 'react-typeahead'
 
 export default class SearchBar extends React.Component {
   constructor(props) {
-   super(props)
+    super(props)
 
-   this.handleChange = this.handleChange.bind(this)
-   this.onOptionSelected = this.onOptionSelected.bind(this)
-   this.loadBusData = this.loadBusData.bind(this)
+    this.state = {
+      invalidInput: false
+    }
+
+    this.handleChange = this.handleChange.bind(this)
+    this.onOptionSelected = this.onOptionSelected.bind(this)
+    this.loadBusData = this.loadBusData.bind(this)
   }
 
   handleChange(event) {
+    if (this.state.invalidInput) {
+      this.setState({invalidInput: false})
+    }
     this.setState({inputStopName: event.target.value})
   }
 
   onOptionSelected(option) {
-    this.setState({inputStopName: option})
+    this.setState({inputStopName: option}, this.loadBusData)
   }
 
   loadBusData() {
-    this.props.loadBusData(this.state.inputStopName)
+    let { inputStopName } = this.state
+    const { allStops } = this.props
+    let stopId = allStops[inputStopName]
+
+    // autofills suggestion
+    if (stopId === undefined) {
+      for (let key in allStops) {
+        if (key.toLowerCase() === inputStopName.trim().toLowerCase()) {
+          stopId = allStops[key]
+          inputStopName = key
+          break
+        }
+      }
+    }
+
+    // no matching stops found
+    if (stopId === undefined) {
+      this.setState({invalidInput: true})
+      this.forceUpdate()
+    } else {
+      // make request
+      this.props.loadBusData(inputStopName, stopId)
+    }
   }
 
   render() {
     const { allStops } = this.props
+    const { invalidInput } = this.state
+    const formValidity = invalidInput ? 'invalid' : ''
+    const typeaheadClasses = {
+      input: formValidity,
+      results: 'typeahead-dropdown',
+      listItem: 'typeahead-list-item',
+      hover: 'typeahead-selected'
+    }
 
     return (
       <div>
@@ -37,13 +74,16 @@ export default class SearchBar extends React.Component {
               placeholder="Enter Stop Here"
               onChange={this.handleChange}
               onOptionSelected={this.onOptionSelected}
+              customClasses={typeaheadClasses}
             />
           </div>
           <div className="col m3 s12">
             <button className="btn" onClick={this.loadBusData}>Load</button>
           </div>
         </div>
+        { invalidInput && <p className="error">Not a valid stop</p> }
       </div>
     )
   }
 }
+

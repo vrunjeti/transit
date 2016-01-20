@@ -28,20 +28,7 @@ export default class Timings extends React.Component {
       })
   }
 
-  loadBusData(inputStopName) {
-    const { allStops } = this.state
-    let stopId = allStops[inputStopName]
-
-    // autofills suggestion
-    if (stopId === undefined) {
-      for (let key in allStops) {
-        if (key.toLowerCase() === inputStopName.trim().toLowerCase()) {
-          stopId = allStops[key]
-          break
-        }
-      }
-    }
-
+  loadBusData(inputStopName, stopId) {
     request
       .get(apiConfig.cumtdUrl + 'GetDeparturesByStop')
       .query({
