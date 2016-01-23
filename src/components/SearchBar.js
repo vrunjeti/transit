@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import { render } from 'react-dom'
 import { Typeahead } from 'react-typeahead'
 
-export default class SearchBar extends React.Component {
+export default class SearchBar extends Component {
   constructor(props) {
     super(props)
 
@@ -14,6 +14,7 @@ export default class SearchBar extends React.Component {
     this.onOptionSelected = this.onOptionSelected.bind(this)
     this.loadBusData = this.loadBusData.bind(this)
   }
+
 
   handleChange(event) {
     if (this.state.invalidInput) {
@@ -87,3 +88,7 @@ export default class SearchBar extends React.Component {
   }
 }
 
+SearchBar.propTypes = {
+  allStops: PropTypes.object.isRequired,
+  loadBusData: PropTypes.func.isRequired
+}

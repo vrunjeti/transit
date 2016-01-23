@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import { render } from 'react-dom'
 import { approximateColor, getColorFamily } from 'materialcolorize'
 
-export default class Results extends React.Component {
+export default class Results extends Component {
   constructor(props) {
     super(props)
   }
@@ -50,7 +50,7 @@ const ResultsTable = ({ departures }) => {
               // backgroundColor: '#' + getColorFamily(bus.route.route_color)['500']
             }
             return (
-              <tr key={i}>
+              <tr key={bus.expected + i}>
                 <td>
                   <div className="bus-color" style={style}></div>
                 </td>
@@ -63,4 +63,10 @@ const ResultsTable = ({ departures }) => {
       </tbody>
     </table>
   )
+}
+
+Results.propTypes = {
+  departures: PropTypes.array,
+  inputStopName: PropTypes.string,
+  accessedTime: PropTypes.string
 }
