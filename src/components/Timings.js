@@ -15,17 +15,24 @@ export default class Timings extends React.Component {
   }
 
   componentDidMount() {
-    // loads all bus stops and creates a dictionary that maps stop names to their ids
-    request
-      .get(apiConfig.cumtdUrl + 'GetStops')
-      .query({key: apiConfig.apiKey})
-      .then(res => {
-        const allStops = res.body.stops.reduce((obj, stop) => {
-          obj[stop.stop_name] = stop.stop_id
-          return obj
-        }, {})
-        this.setState({allStops: allStops})
+    if (localStorage['allStops']) {
+      this.setState({
+        allStops: JSON.parse(localStorage['allStops'])
       })
+    } else {
+      // loads all bus stops and creates a dictionary that maps stop names to their ids
+      request
+        .get(apiConfig.cumtdUrl + 'GetStops')
+        .query({key: apiConfig.apiKey})
+        .then(res => {
+          const allStops = res.body.stops.reduce((obj, stop) => {
+            obj[stop.stop_name] = stop.stop_id
+            return obj
+          }, {})
+          this.setState({allStops: allStops})
+          localStorage.setItem('allStops', JSON.stringify(allStops))
+        })
+    }
   }
 
   loadBusData(inputStopName, stopId) {
