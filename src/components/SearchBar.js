@@ -29,7 +29,7 @@ export default class SearchBar extends Component {
 
   loadBusData() {
     let { inputStopName } = this.state
-    const { allStops } = this.props
+    const { allStops, clearResults } = this.props
     let stopId = allStops[inputStopName]
 
     // autofills suggestion
@@ -46,7 +46,7 @@ export default class SearchBar extends Component {
     // no matching stops found
     if (stopId === undefined) {
       this.setState({invalidInput: true})
-      this.forceUpdate()
+      clearResults()
     } else {
       // make request
       this.props.loadBusData(inputStopName, stopId)
@@ -90,5 +90,6 @@ export default class SearchBar extends Component {
 
 SearchBar.propTypes = {
   allStops: PropTypes.object.isRequired,
-  loadBusData: PropTypes.func.isRequired
+  loadBusData: PropTypes.func.isRequired,
+  clearResults: PropTypes.func.isRequired
 }

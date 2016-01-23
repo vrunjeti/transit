@@ -12,6 +12,7 @@ export default class Timings extends React.Component {
       allStops: {}
     }
     this.loadBusData = this.loadBusData.bind(this)
+    this.clearResults = this.clearResults.bind(this)
   }
 
   componentDidMount() {
@@ -51,11 +52,15 @@ export default class Timings extends React.Component {
       })
   }
 
+  clearResults() {
+    this.setState({departures: undefined})
+  }
+
   render() {
     const { allStops, inputStopName, departures, accessedTime } = this.state
     return (
       <div>
-        <SearchBar allStops={allStops} loadBusData={this.loadBusData} />
+        <SearchBar allStops={allStops} loadBusData={this.loadBusData} clearResults={this.clearResults} />
         <Results departures={departures} inputStopName={inputStopName} accessedTime={accessedTime} />
       </div>
     )
