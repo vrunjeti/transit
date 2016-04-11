@@ -5,35 +5,57 @@ import { approximateColor, getColorFamily } from 'materialcolorize'
 export default class Results extends Component {
   constructor(props) {
     super(props)
+    this.isFavoriteStop = this.isFavoriteStop.bind(this)
+    this.toggleIsFavoriteStop = this.toggleIsFavoriteStop.bind(this)
   }
 
   // returns true if the stop is favorited
-  favoritedStop(stop) {
-    const favorites = JSON.parse(localStorage['favorites'])
-    return !!~favorites.map(stop => stop.name).indexOf(stop)
+  isFavoriteStop(stopName) {
+    let favorites = localStorage['favorites']
+    if (!favorites) return false
+    favorites = JSON.parse(favorites)
+
+    // TODO: change to Array.prototype.includes
+    return !!~favorites.map(stop => stop.stopName).indexOf(stopName)
   }
 
-  setAsFavorite() {
+  toggleIsFavoriteStop() {
+    const { inputStopName, stopId, forceLoadFavorites } = this.props
+    let favorites = localStorage['favorites']
+    favorites = (!favorites) ? [] : JSON.parse(favorites)
 
+    if (this.isFavoriteStop(inputStopName)) {
+      const newFavorites = favorites.filter(stop => stop.stopId !== stopId)
+      localStorage.setItem('favorites', JSON.stringify(newFavorites))
+    } else {
+      favorites.push({ stopId: stopId, stopName: inputStopName })
+      localStorage.setItem('favorites', JSON.stringify(favorites))
+    }
+
+    // this.forceUpdate()
+    forceLoadFavorites()
   }
 
   render() {
     const { departures, inputStopName, accessedTime, userDidLoad, stopId } = this.props
-    // const starClass = (this.favoritedStop()) ? 'starred' : 'not-starred'
-    const starClass = 'not-starred '
-
+    const starClass = (this.isFavoriteStop(inputStopName)) ? 'starred' : 'not-starred'
 
     if (userDidLoad) {
       if (departures.length) {
         return (
-          <div>
-            <h4>Showing Buses For: {inputStopName} <i className={starClass + 'fa fa-star'}></i></h4>
+          <div className="results">
+            <h4>
+              Showing Buses For: {inputStopName} 
+              <i className={starClass + ' fa fa-star star'} onClick={this.toggleIsFavoriteStop}></i>
+            </h4>
             <p>Accessed Time: <span className="timestamp">{accessedTime}</span></p>
             <ResultsTable departures={departures} />
           </div>
         )
       } else {
-        return <h5>Sorry, there aren't any buses coming to {inputStopName} anytime soon =(</h5>
+        return <h5 className="results">
+          Sorry, there aren't any buses coming to {inputStopName} anytime soon =(
+        </h5>
       }
     } else {
       return false
@@ -45,7 +67,7 @@ const StarIcon = () => {
   const starClass = 'starred '
 
   return (
-    <i className={starClass + 'fa fa-star'} onClick={this.setAsFavorite}></i>
+    <i className={starClass + 'fa fa-star'} onClick={this.toggleIsFavoriteStop}></i>
   )
 }
 
@@ -54,9 +76,9 @@ const ResultsTable = ({ departures }) => {
     <table className="table striped">
       <thead>
         <tr>
-          <td>Color</td>
-          <td>Bus</td>
-          <td>Minutes</td>
+          <th>Color</th>
+          <th>Bus</th>
+          <th>Minutes</th>
         </tr>
       </thead>
       <tbody>

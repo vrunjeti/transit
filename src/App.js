@@ -7,9 +7,9 @@ export default class App extends React.Component {
     return (
       <div>
         <body>
-          <nav>
+          <nav className="cyan lighten-1">
             <div className="nav-wrapper container">
-              <div className="brand-logo">CUMTD React</div>
+              <div className="brand-logo">Transit</div>
             </div>
           </nav>
           <div className="container">

@@ -5,7 +5,7 @@
 import browserSync from 'browser-sync';
 // Required for react-router browserHistory
 // see https://github.com/BrowserSync/browser-sync/issues/204#issuecomment-102623643
-import historyApiFallback from 'connect-history-api-fallback';
+// import historyApiFallback from 'connect-history-api-fallback';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
@@ -35,9 +35,9 @@ browserSync({
       }),
 
       // bundler should be the same as above
-      webpackHotMiddleware(bundler),
+      webpackHotMiddleware(bundler)
 
-      historyApiFallback()
+      // historyApiFallback()
     ]
   },
 

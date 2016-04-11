@@ -37,21 +37,33 @@ export default class Timings extends React.Component {
   }
 
   loadBusData(inputStopName, stopId) {
-    request
-      .get(cumtdUrl + 'GetDeparturesByStop')
-      .query({
-        key: apiKey,
-        stop_id: stopId
-      })
-      .then(res => {
-        this.setState({
-          accessedTime: moment(res.body.time).format("MMMM Do YYYY, h:mm:ss a"),
-          inputStopName: inputStopName,
-          stopId: stopId,
-          departures: res.body.departures,
-          userDidLoad: true
+    // because there's no buses after 3 am and I still need to code
+    // if (stopId === 'PLAZA') {
+    //   const dummy = JSON.parse(localStorage['dummyStopResponse'])
+    //   this.setState({
+    //     accessedTime: moment(dummy.time).format("MMMM Do YYYY, h:mm:ss a"),
+    //     inputStopName: inputStopName,
+    //     stopId: stopId,
+    //     departures: dummy.departures,
+    //     userDidLoad: true
+    //   })
+    // } else {
+      request
+        .get(cumtdUrl + 'GetDeparturesByStop')
+        .query({
+          key: apiKey,
+          stop_id: stopId
         })
-      })
+        .then(res => {
+          this.setState({
+            accessedTime: moment(res.body.time).format("MMMM Do YYYY, h:mm:ss a"),
+            inputStopName: inputStopName,
+            stopId: stopId,
+            departures: res.body.departures,
+            userDidLoad: true
+          })
+        })
+    // }
   }
 
   clearResults() {
@@ -61,12 +73,27 @@ export default class Timings extends React.Component {
     })
   }
 
+  forceLoadFavorites() {
+    this.forceUpdate()
+  }
+
   render() {
     const { allStops, inputStopName, stopId, departures, accessedTime, userDidLoad } = this.state
     return (
       <div>
-        <SearchBar allStops={allStops} loadBusData={this.loadBusData} clearResults={this.clearResults} />
-        <Results userDidLoad={userDidLoad} departures={departures} inputStopName={inputStopName} accessedTime={accessedTime} stopId={stopId}/>
+        <SearchBar 
+          allStops={allStops}
+          loadBusData={this.loadBusData}
+          clearResults={this.clearResults} 
+        />
+        <Results 
+          userDidLoad={userDidLoad}
+          departures={departures}
+          inputStopName={inputStopName}
+          accessedTime={accessedTime}
+          stopId={stopId}
+          forceLoadFavorites={this.forceLoadFavorites.bind(this)}
+        />
       </div>
     )
   }
