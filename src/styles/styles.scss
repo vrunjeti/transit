@@ -1,3 +1,18 @@
+@import url(https://fonts.googleapis.com/css?family=Lato);
+// @import url(https://fonts.googleapis.com/css?family=Lato|Source+Sans+Pro);
+
+body {
+  font-family: 'Lato', 'Roboto';
+}
+
+.results {
+  margin: 25px 0;
+}
+
+.star {
+  padding-left: 10px
+}
+
 .bus-color {
   width: 16px;
   height: 16px;
@@ -34,4 +49,12 @@
 .typeahead-selected {
   background-color: lightblue;
   color: #ffffff;
+}
+
+.starred {
+  color: #FFEB3B;
+}
+
+.not-starred {
+  color: #BDBDBD;
 }

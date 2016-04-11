@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { apiConfig } from './../config'
+import { cumtdUrl, apiKey } from './../config'
 import request from 'superagent'
 import moment from 'moment'
 import { Results, SearchBar } from './'
@@ -23,8 +23,8 @@ export default class Timings extends React.Component {
     } else {
       // loads all bus stops and creates a dictionary that maps stop names to their ids
       request
-        .get(apiConfig.cumtdUrl + 'GetStops')
-        .query({key: apiConfig.apiKey})
+        .get(cumtdUrl + 'GetStops')
+        .query({key: apiKey})
         .then(res => {
           const allStops = res.body.stops.reduce((obj, stop) => {
             obj[stop.stop_name] = stop.stop_id
@@ -37,31 +37,63 @@ export default class Timings extends React.Component {
   }
 
   loadBusData(inputStopName, stopId) {
-    request
-      .get(apiConfig.cumtdUrl + 'GetDeparturesByStop')
-      .query({
-        key: apiConfig.apiKey,
-        stop_id: stopId
-      })
-      .then(res => {
-        this.setState({
-          accessedTime: moment(res.body.time).format("MMMM Do YYYY, h:mm:ss a"),
-          inputStopName: inputStopName,
-          departures: res.body.departures
+    // because there's no buses after 3 am and I still need to code
+    // if (stopId === 'PLAZA') {
+    //   const dummy = JSON.parse(localStorage['dummyStopResponse'])
+    //   this.setState({
+    //     accessedTime: moment(dummy.time).format("MMMM Do YYYY, h:mm:ss a"),
+    //     inputStopName: inputStopName,
+    //     stopId: stopId,
+    //     departures: dummy.departures,
+    //     userDidLoad: true
+    //   })
+    // } else {
+      request
+        .get(cumtdUrl + 'GetDeparturesByStop')
+        .query({
+          key: apiKey,
+          stop_id: stopId
         })
-      })
+        .then(res => {
+          this.setState({
+            accessedTime: moment(res.body.time).format("MMMM Do YYYY, h:mm:ss a"),
+            inputStopName: inputStopName,
+            stopId: stopId,
+            departures: res.body.departures,
+            userDidLoad: true
+          })
+        })
+    // }
   }
 
   clearResults() {
-    this.setState({departures: undefined})
+    this.setState({
+      departures: undefined,
+      userDidLoad: false
+    })
+  }
+
+  forceLoadFavorites() {
+    this.forceUpdate()
   }
 
   render() {
-    const { allStops, inputStopName, departures, accessedTime } = this.state
+    const { allStops, inputStopName, stopId, departures, accessedTime, userDidLoad } = this.state
     return (
       <div>
-        <SearchBar allStops={allStops} loadBusData={this.loadBusData} clearResults={this.clearResults} />
-        <Results departures={departures} inputStopName={inputStopName} accessedTime={accessedTime} />
+        <SearchBar 
+          allStops={allStops}
+          loadBusData={this.loadBusData}
+          clearResults={this.clearResults} 
+        />
+        <Results 
+          userDidLoad={userDidLoad}
+          departures={departures}
+          inputStopName={inputStopName}
+          accessedTime={accessedTime}
+          stopId={stopId}
+          forceLoadFavorites={this.forceLoadFavorites.bind(this)}
+        />
       </div>
     )
   }

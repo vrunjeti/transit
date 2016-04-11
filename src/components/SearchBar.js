@@ -5,16 +5,11 @@ import { Typeahead } from 'react-typeahead'
 export default class SearchBar extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      invalidInput: false
-    }
-
+    this.state = { invalidInput: false }
     this.handleChange = this.handleChange.bind(this)
     this.onOptionSelected = this.onOptionSelected.bind(this)
     this.loadBusData = this.loadBusData.bind(this)
   }
-
 
   handleChange(event) {
     if (this.state.invalidInput) {
@@ -79,10 +74,11 @@ export default class SearchBar extends Component {
             />
           </div>
           <div className="col m3 s12">
-            <button className="btn" onClick={this.loadBusData}>Load</button>
+            <button className="btn cyan lighten-1" onClick={this.loadBusData}>Load</button>
           </div>
         </div>
         { invalidInput && <p className="error">Not a valid stop</p> }
+        <Favorites onOptionSelected={this.onOptionSelected} />
       </div>
     )
   }
@@ -92,4 +88,37 @@ SearchBar.propTypes = {
   allStops: PropTypes.object.isRequired,
   loadBusData: PropTypes.func.isRequired,
   clearResults: PropTypes.func.isRequired
+}
+
+const Favorites = ({ onOptionSelected }) => {
+  let favorites = localStorage['favorites']
+  favorites = (!favorites) ? [] : JSON.parse(favorites)
+
+  if (!favorites.length) {
+    return <p>No favorites set yet. Click the star in the results to set as a favorite</p>
+  }
+
+  return (
+    <div className="valign-wrapper">
+      <span className="valign">Favorites:</span>
+      {
+        favorites.map((stop, i) => <FavoriteChip 
+          stop={stop}
+          onOptionSelected={onOptionSelected}
+          key={stop.stopId + i}
+        />)
+      }
+    </div>
+  )
+}
+
+const FavoriteChip = ({ stop, onOptionSelected }) => {
+  const { stopId, stopName } = stop
+  const margin = { margin: '0 5px 0' }
+  return <span 
+    className="valign chip"
+    style={margin}
+    onClick={onOptionSelected.bind(this, stopName)}>
+    {stop.stopName}
+  </span>
 }

@@ -1,5 +1,3 @@
-import apiConfig from './apiConfig'
+import { cumtdUrl, apiKey } from './apiConfig'
 
-export default {
-  apiConfig: apiConfig
-}
+export { cumtdUrl, apiKey }
