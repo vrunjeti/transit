@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import { apiConfig } from './../config'
+import { cumtdUrl, apiKey } from './../config'
 import request from 'superagent'
 import moment from 'moment'
 import { Results, SearchBar } from './'
@@ -23,8 +23,8 @@ export default class Timings extends React.Component {
     } else {
       // loads all bus stops and creates a dictionary that maps stop names to their ids
       request
-        .get(apiConfig.cumtdUrl + 'GetStops')
-        .query({key: apiConfig.apiKey})
+        .get(cumtdUrl + 'GetStops')
+        .query({key: apiKey})
         .then(res => {
           const allStops = res.body.stops.reduce((obj, stop) => {
             obj[stop.stop_name] = stop.stop_id
@@ -38,9 +38,9 @@ export default class Timings extends React.Component {
 
   loadBusData(inputStopName, stopId) {
     request
-      .get(apiConfig.cumtdUrl + 'GetDeparturesByStop')
+      .get(cumtdUrl + 'GetDeparturesByStop')
       .query({
-        key: apiConfig.apiKey,
+        key: apiKey,
         stop_id: stopId
       })
       .then(res => {
