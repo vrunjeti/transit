@@ -101,22 +101,28 @@ const Favorites = ({ onOptionSelected }) => {
   return (
     <div className="valign-wrapper">
       <span className="valign">Favorites:</span>
-      {
-        favorites.map((stop, i) => <FavoriteChip 
-          stop={stop}
-          onOptionSelected={onOptionSelected}
-          key={stop.stopId + i}
-        />)
-      }
+      <span className="valign">
+        {
+          favorites.sort((a, b) => {
+            if (a.stopName < b.stopName) return -1
+            if (a.stopName > b.stopName) return 1
+            return 0
+          }).map((stop, i) => <FavoriteChip
+            stop={stop}
+            onOptionSelected={onOptionSelected}
+            key={stop.stopId + i}
+          />)
+        }
+      </span>
     </div>
   )
 }
 
 const FavoriteChip = ({ stop, onOptionSelected }) => {
   const { stopId, stopName } = stop
-  const margin = { margin: '0 5px 0' }
-  return <span 
-    className="valign chip"
+  const margin = { margin: '5px' }
+  return <span
+    className="chip"
     style={margin}
     onClick={onOptionSelected.bind(this, stopName)}>
     {stop.stopName}

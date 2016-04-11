@@ -1,18 +1,20 @@
 @import url(https://fonts.googleapis.com/css?family=Lato);
-// @import url(https://fonts.googleapis.com/css?family=Lato|Source+Sans+Pro);
-
-// @import "_materialize.min.scss"
 
 body {
   font-family: 'Lato', 'Roboto';
 }
 
 .results {
-  margin: 25px 0;
+  margin: 25px 0 50px;
 }
 
 .star {
   padding-left: 10px
+}
+
+.chip,
+.star {
+  cursor: pointer;
 }
 
 .bus-color {
