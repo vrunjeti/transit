@@ -45,7 +45,7 @@ export default class Results extends Component {
         return (
           <div className="results">
             <h4>
-              Showing Buses For: {inputStopName} 
+              Showing Buses For: {inputStopName}
               <i className={starClass + ' fa fa-star star'} onClick={this.toggleIsFavoriteStop}></i>
             </h4>
             <p>Accessed Time: <span className="timestamp">{accessedTime}</span></p>
@@ -61,14 +61,6 @@ export default class Results extends Component {
       return false
     }
   }
-}
-
-const StarIcon = () => {
-  const starClass = 'starred '
-
-  return (
-    <i className={starClass + 'fa fa-star'} onClick={this.toggleIsFavoriteStop}></i>
-  )
 }
 
 const ResultsTable = ({ departures }) => {
