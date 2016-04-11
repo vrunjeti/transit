@@ -20,12 +20,13 @@
   },
   "author": "Varun Munjeti",
   "dependencies": {
+    "font-awesome": "4.5.0",
     "materialcolorize": "1.1.7",
     "materialize-css": "0.97.5",
     "moment": "2.11.0",
     "react": "0.14.0",
     "react-dom": "0.14.0",
-    "react-typeahead": "1.1.5",
+    "react-typeahead": "1.1.9",
     "superagent": "1.6.1"
   },
   "devDependencies": {

@@ -7,18 +7,28 @@ export default class Results extends Component {
     super(props)
   }
 
+  // returns true if the stop is favorited
+  favoritedStop(stop) {
+    const favorites = JSON.parse(localStorage['favorites'])
+    return !!~favorites.map(stop => stop.name).indexOf(stop)
+  }
+
+  setAsFavorite() {
+
+  }
+
   render() {
-    const { departures, inputStopName, accessedTime } = this.props
-    const userDidLoad = (departures !== undefined)
+    const { departures, inputStopName, accessedTime, userDidLoad, stopId } = this.props
+    // const starClass = (this.favoritedStop()) ? 'starred' : 'not-starred'
+    const starClass = 'not-starred '
+
 
     if (userDidLoad) {
       if (departures.length) {
         return (
           <div>
-            <div className="row">
-              <h4>Showing Buses For: {inputStopName}</h4>
-              <p>Accessed Time: <span className="timestamp">{accessedTime}</span></p>
-            </div>
+            <h4>Showing Buses For: {inputStopName} <i className={starClass + 'fa fa-star'}></i></h4>
+            <p>Accessed Time: <span className="timestamp">{accessedTime}</span></p>
             <ResultsTable departures={departures} />
           </div>
         )
@@ -29,6 +39,14 @@ export default class Results extends Component {
       return false
     }
   }
+}
+
+const StarIcon = () => {
+  const starClass = 'starred '
+
+  return (
+    <i className={starClass + 'fa fa-star'} onClick={this.setAsFavorite}></i>
+  )
 }
 
 const ResultsTable = ({ departures }) => {
@@ -68,5 +86,6 @@ const ResultsTable = ({ departures }) => {
 Results.propTypes = {
   departures: PropTypes.array,
   inputStopName: PropTypes.string,
-  accessedTime: PropTypes.string
+  accessedTime: PropTypes.string,
+  userDidLoad: PropTypes.bool
 }

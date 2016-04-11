@@ -47,21 +47,26 @@ export default class Timings extends React.Component {
         this.setState({
           accessedTime: moment(res.body.time).format("MMMM Do YYYY, h:mm:ss a"),
           inputStopName: inputStopName,
-          departures: res.body.departures
+          stopId: stopId,
+          departures: res.body.departures,
+          userDidLoad: true
         })
       })
   }
 
   clearResults() {
-    this.setState({departures: undefined})
+    this.setState({
+      departures: undefined,
+      userDidLoad: false
+    })
   }
 
   render() {
-    const { allStops, inputStopName, departures, accessedTime } = this.state
+    const { allStops, inputStopName, stopId, departures, accessedTime, userDidLoad } = this.state
     return (
       <div>
         <SearchBar allStops={allStops} loadBusData={this.loadBusData} clearResults={this.clearResults} />
-        <Results departures={departures} inputStopName={inputStopName} accessedTime={accessedTime} />
+        <Results userDidLoad={userDidLoad} departures={departures} inputStopName={inputStopName} accessedTime={accessedTime} stopId={stopId}/>
       </div>
     )
   }

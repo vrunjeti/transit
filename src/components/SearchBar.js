@@ -83,6 +83,7 @@ export default class SearchBar extends Component {
           </div>
         </div>
         { invalidInput && <p className="error">Not a valid stop</p> }
+        { invalidInput || <Favorites /> }
       </div>
     )
   }
@@ -92,4 +93,16 @@ SearchBar.propTypes = {
   allStops: PropTypes.object.isRequired,
   loadBusData: PropTypes.func.isRequired,
   clearResults: PropTypes.func.isRequired
+}
+
+const Favorites = () => {
+  const margin = { margin: '0 5px 0' }
+  return (
+    <div className="valign-wrapper">
+      <span className="valign" style={margin}>Favorites:</span>
+      <span className="valign chip" style={margin}>Test</span>
+      <span className="valign chip" style={margin}>Test</span>
+      <span className="valign chip" style={margin}>Test</span>
+    </div>
+  )
 }
