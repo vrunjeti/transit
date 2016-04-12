@@ -8,8 +8,9 @@ export default class App extends React.Component {
       <div>
         <body>
           <nav className="cyan lighten-1">
-            <div className="nav-wrapper container">
-              <div className="brand-logo">Transit</div>
+            <div className="nav-wrapper container valign-wrapper">
+              <img src="logo-trans.png" className="logo valign"/>
+              <div className="brand-logo valign">Transit</div>
             </div>
           </nav>
           <div className="container">

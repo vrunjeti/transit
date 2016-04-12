@@ -5,10 +5,13 @@ import { Typeahead } from 'react-typeahead'
 export default class SearchBar extends Component {
   constructor(props) {
     super(props)
-    this.state = { invalidInput: false }
+    this.state = { invalidInput: false, hideDropdown: false }
     this.handleChange = this.handleChange.bind(this)
     this.onOptionSelected = this.onOptionSelected.bind(this)
     this.loadBusData = this.loadBusData.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
+    this.closeDropdown = this.closeDropdown.bind(this)
+    this.showDropdown = this.showDropdown.bind(this)
   }
 
   handleChange(event) {
@@ -16,6 +19,30 @@ export default class SearchBar extends Component {
       this.setState({invalidInput: false})
     }
     this.setState({inputStopName: event.target.value})
+  }
+
+  onKeyDown(event) {
+    if (event.key === 'Enter') {
+      this.loadBusData()
+    }
+  }
+
+  onKeyUp(event) {
+    if (event.key === 'Enter') {
+      event.target.blur()
+    }
+  }
+
+  closeDropdown() {
+    if (!this.state.hideDropdown) {
+      this.setState({ hideDropdown: true })
+    }
+  }
+
+  showDropdown() {
+    if (this.state.hideDropdown) {
+      this.setState({ hideDropdown: false })
+    }
   }
 
   onOptionSelected(option) {
@@ -40,17 +67,19 @@ export default class SearchBar extends Component {
 
     // no matching stops found
     if (stopId === undefined) {
-      this.setState({invalidInput: true})
+      this.setState({invalidInput: true })
       clearResults()
     } else {
       // make request
       this.props.loadBusData(inputStopName, stopId)
     }
+
+    this.setState({ hideDropdown: false })
   }
 
   render() {
     const { allStops } = this.props
-    const { invalidInput } = this.state
+    const { invalidInput, hideDropdown } = this.state
     const formValidity = invalidInput ? 'invalid' : ''
     const typeaheadClasses = {
       input: formValidity,
@@ -65,10 +94,14 @@ export default class SearchBar extends Component {
         <div className="row">
           <div className="col m9 s12">
             <Typeahead
-              options={Object.keys(allStops)}
+              options={hideDropdown ? [] : Object.keys(allStops)}
               maxVisible={5}
               placeholder="Enter Stop Here"
               onChange={this.handleChange}
+              onKeyDown={this.onKeyDown}
+              onKeyUp={this.onKeyUp}
+              onBlur={this.closeDropdown}
+              onFocus={this.showDropdown}
               onOptionSelected={this.onOptionSelected}
               customClasses={typeaheadClasses}
             />
