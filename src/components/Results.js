@@ -54,7 +54,7 @@ export default class Results extends Component {
         )
       } else {
         return <h5 className="results">
-          Sorry, there aren't any buses coming to {inputStopName} anytime soon =(
+          No buses from {inputStopName} anytime soon =(
         </h5>
       }
     } else {

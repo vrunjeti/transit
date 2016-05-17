@@ -12,6 +12,7 @@ export default class SearchBar extends Component {
     this.onKeyDown = this.onKeyDown.bind(this)
     this.closeDropdown = this.closeDropdown.bind(this)
     this.showDropdown = this.showDropdown.bind(this)
+    this.loadFavorite = this.loadFavorite.bind(this)
   }
 
   handleChange(event) {
@@ -46,7 +47,26 @@ export default class SearchBar extends Component {
   }
 
   onOptionSelected(option) {
-    this.setState({inputStopName: option}, this.loadBusData)
+    console.log('option', option)
+    this.setState({ inputStopName: option }, this.loadBusData)
+  }
+
+  loadFavorite(option) {
+    this.refs._typeahead.setEntryText(option)
+    // this.onOptionSelected(option)
+
+    this.setState({
+      inputStopName: option,
+      invalidInput: false
+    }, this.loadBusData)
+    // this.setState({ hideDropdown: true })
+
+
+    // this.refs._typeahead.setState({ entryValue: option })
+    // this.setState({ invalidInput: false })
+    // this.refs._typeahead.setState({ visible: [] })
+
+    // this.closeDropdown()
   }
 
   loadBusData() {
@@ -74,12 +94,12 @@ export default class SearchBar extends Component {
       this.props.loadBusData(inputStopName, stopId)
     }
 
-    this.setState({ hideDropdown: false })
+    // this.setState({ hideDropdown: false })
   }
 
   render() {
     const { allStops } = this.props
-    const { invalidInput, hideDropdown } = this.state
+    const { invalidInput, hideDropdown, inputStopName } = this.state
     const formValidity = invalidInput ? 'invalid' : ''
     const typeaheadClasses = {
       input: formValidity,
@@ -94,6 +114,7 @@ export default class SearchBar extends Component {
         <div className="row">
           <div className="col m9 s12">
             <Typeahead
+              ref="_typeahead"
               options={hideDropdown ? [] : Object.keys(allStops)}
               maxVisible={5}
               placeholder="Enter Stop Here"
@@ -111,7 +132,7 @@ export default class SearchBar extends Component {
           </div>
         </div>
         { invalidInput && <p className="error">Not a valid stop</p> }
-        <Favorites onOptionSelected={this.onOptionSelected} />
+        <Favorites onOptionSelected={this.onOptionSelected} loadFavorite={this.loadFavorite} />
       </div>
     )
   }
@@ -123,7 +144,7 @@ SearchBar.propTypes = {
   clearResults: PropTypes.func.isRequired
 }
 
-const Favorites = ({ onOptionSelected }) => {
+const Favorites = ({ onOptionSelected, loadFavorite }) => {
   let favorites = localStorage['favorites']
   favorites = (!favorites) ? [] : JSON.parse(favorites)
 
@@ -143,6 +164,7 @@ const Favorites = ({ onOptionSelected }) => {
           }).map((stop, i) => <FavoriteChip
             stop={stop}
             onOptionSelected={onOptionSelected}
+            loadFavorite={loadFavorite}
             key={stop.stopId + i}
           />)
         }
@@ -151,13 +173,13 @@ const Favorites = ({ onOptionSelected }) => {
   )
 }
 
-const FavoriteChip = ({ stop, onOptionSelected }) => {
+const FavoriteChip = ({ stop, onOptionSelected, loadFavorite }) => {
   const { stopId, stopName } = stop
   const margin = { margin: '5px' }
   return <span
     className="chip"
     style={margin}
-    onClick={onOptionSelected.bind(this, stopName)}>
+    onClick={loadFavorite.bind(this, stopName)}>
     {stop.stopName}
   </span>
 }
